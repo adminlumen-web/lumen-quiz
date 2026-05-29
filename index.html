@@ -262,7 +262,39 @@
         
         document.getElementById("performance-feedback").innerText = feedback;
     }
+    
+    function finishQuiz() {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('progress').style.width = `100%`;
 
+        const resultContainer = document.getElementById('result-content');
+        const passScore = Math.ceil(selectedQuestions.length * 0.8); // Tiêu chuẩn Đạt là từ 80% trở lên
+        const isPassed = score >= passScore;
+
+        let html = '';
+        if(isPassed) {
+            html = `
+                <div class="certificate" id="cert-print">
+                    <div class="cert-title">CHỨNG NHẬN HOÀN THÀNH</div>
+                    <p>Hệ thống đánh giá tự động xin vinh danh</p>
+                    <div class="cert-name">${userInfo.name}</div>
+                    <p>Email: ${userInfo.email}</p>
+                    <p class="cert-score">Đã vượt qua bài kiểm tra nhạc lý & phụng vụ căn bản</p>
+                    <p>Kết quả đạt: <strong>${score}/${selectedQuestions.length} câu đúng</strong></p>
+                    <div class="pass-stamp">PASSED - ĐẠT</div>
+                </div>
+                <p style="margin-top:20px; color:gray; font-size:14px;">💡 Hãy <strong>chụp ảnh màn hình Chứng nhận trên</strong> để gửi lại cho ca trưởng nhé!</p>
+            `;
+        } else {
+            html = `
+                <div class="fail-message">KẾT QUẢ: CHƯA ĐẠT (${score}/${selectedQuestions.length} câu đúng)</div>
+                <p>Tiêu chuẩn để nhận chứng nhận là đạt từ 80% số câu đúng trở lên (${passScore} câu).</p>
+                <button onclick="location.reload()" style="margin-top:20px; background-color:var(--secondary-color);">THỬ LẠI LƯỢT KHÁC</button>
+            `;
+        }
+
+        resultContainer.innerHTML = html;
     function sendDataToGoogleSheet() {
         let statusText = document.getElementById("sync-status");
         if (!SCRIPT_URL || SCRIPT_URL.includes("URL_WEB_APP_CỦA_BẠN")) {
