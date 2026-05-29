@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Literacy Gateway - Lumen Choir</title>
+    <title>Music Initial Test - Lumen Choir</title>
     <style>
         :root {
             --primary-color: #1e3a8a;
@@ -37,9 +37,32 @@
 </head>
 <body>
 
+<script>
+        // Thay đường dẫn URL Google Apps Script của anh vào đây sau khi làm xong
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt_eB5BRVjWwZDCzziXwKZ5FWGF18WHcpe9BeKm-QWRMvXf_advLudjMxGaIVJgGe-/exec";
+    </script>
+
+    <div id="login-screen" class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 transition-all duration-300">
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-slate-800 uppercase tracking-wide">Khảo Sát Kiến Thức</h2>
+            <p class="text-sm text-slate-500 mt-1">Dành cho ca viên Dàn hợp xướng Lumen</p>
+        </div>
+        <form id="login-form" onsubmit="startQuiz(event)" class="space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Họ và tên <span class="text-red-500">*</span></label>
+                <input type="text" id="user-name" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" placeholder="Nhập đầy đủ họ tên">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Email <span class="text-red-500">*</span></label>
+                <input type="email" id="user-email" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" placeholder="viethung@gmail.com">
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 cursor-pointer">Bắt Đầu Làm Bài</button>
+        </form>
+    </div>
+
 <div class="quiz-container">
     <div id="quiz-screen">
-        <h1>Music Literacy Gateway</h1>
+        <h1>Music Initial Test</h1>
         <div class="subtitle">LUMEN CHOIR</div>
         <div class="progress-container">
             <span id="progress-text">Câu hỏi 1/30</span>
@@ -48,19 +71,23 @@
         <div class="question" id="question-text">Đang tải câu hỏi...</div>
         <div class="answers-grid" id="answers-container"></div>
         <div class="explanation" id="explanation-box">
-            <strong>Giải thích từ Hội đồng Nghệ thuật:</strong>
+            <strong>Giải thích:</strong>
             <p id="explanation-text"></p>
         </div>
         <button class="btn-next" id="btn-next" onclick="nextQuestion()">Câu tiếp theo</button>
     </div>
 
     <div id="result-screen" class="result-screen">
-        <h1>Hoàn Thành Sát Hạch!</h1>
+        <h1>Chúc mừng bạn đã hoàn thành!</h1>
         <div class="subtitle">LUMEN CHOIR</div>
-        <p style="font-size: 16px; color: #4b5563;">Kết quả phân loại năng lực Nhạc lý & Phụng vụ của ca viên:</p>
+        <p style="font-size: 16px; color: #4b5563;">Kết quả của bạn:</p>
         <div class="score" id="score-text">0/30</div>
         <div class="feedback-box">
             <p id="performance-feedback" style="font-weight: 600; color: var(--primary-color); font-size: 18px;"></p>
+        </div>
+        <div class="p-3 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg text-xs text-left space-y-1 mb-6">
+            <p class="font-bold">⚠️ Lưu ý dành cho bạn:</p>
+            <p>Vui lòng <strong>chụp ảnh lại màn hình này</strong> làm minh chứng để gửi cho ca trưởng, phòng hờ sự cố hệ thống.</p>
         </div>
         <button class="btn-next" style="display:block;" onclick="resetQuiz()">Làm lại đề trắc nghiệm mới</button>
     </div>
@@ -153,7 +180,9 @@
       { "id": 119, "category": "Sight-reading", "question": "Khi đọc một bản nhạc mới, yếu tố nào cần quan sát đầu tiên trước khi hát?", "answers": ["Tên tác giả và tiêu đề.", "Hóa biểu (dấu hóa đầu dòng) và số chỉ nhịp.", "Ký hiệu âm lượng (Dynamics).", "Tốc độ (Tempo)."], "correctAnswer": "Hóa biểu (dấu hóa đầu dòng) và số chỉ nhịp.", "explanation": "Hóa biểu xác định không gian giọng, số chỉ nhịp xác định khung đập nhịp thời gian — đây là bộ đôi la bàn cho bài nhạc mới." }
     ];
 
+// Các biến điều khiển toàn cục
     const TOTAL_QUESTIONS_PER_TEST = 30;
+    let userName = "", userEmail = "";
     let quizData = [];
     let currentQuestionIndex = 0;
     let score = 0;
@@ -226,12 +255,42 @@
         
         let feedback = "";
         let percent = (score / quizData.length) * 100;
-        if(percent === 100) feedback = "Xuất sắc! Bạn sở hữu nền tảng lý thuyết và phụng vụ hoàn hảo. Đủ năng lực làm Trưởng bè (Leader).";
-        else if(percent >= 80) feedback = "Rất tốt! Bạn nắm rất vững kiến thức và kỹ năng thực hành âm nhạc của ca đoàn.";
-        else if(percent >= 50) feedback = "Đạt yêu cầu! Bạn có kiến thức cơ bản tốt nhưng cần trau dồi thêm kỹ năng thực hành.";
-        else feedback = "Bạn cần tham gia lớp củng cố và đào tạo nhạc lý căn bản của Ca đoàn.";
+        if(percent === 100) feedback = "Xuất sắc! Bạn có hiểu biết rất tốt về nhạc lý và phụng vụ đấy.";
+        else if(percent >= 80) feedback = "Rất tốt! Bạn nắm vững kiến thức rồi, hãy phát huy thêm nhé.";
+        else if(percent >= 50) feedback = "Khá tốt! Bạn có kiến thức cơ bản tốt và hãy trau dồi thêm nữa nhé.";
+        else feedback = "Bạn cần học hỏi thêm về nhạc lý căn bản và các kiến thức về phụng vụ để phục vụ tốt hơn. Không sao, Lumen sẽ đồng hành cùng bạn.";
         
         document.getElementById("performance-feedback").innerText = feedback;
+    }
+
+    function sendDataToGoogleSheet() {
+        let statusText = document.getElementById("sync-status");
+        if (!SCRIPT_URL || SCRIPT_URL.includes("URL_WEB_APP_CỦA_BẠN")) {
+            statusText.innerText = "⚠️ Chưa thiết lập link Web App Google Sheet ở Bước 2.";
+            statusText.className = "text-xs text-amber-600 mt-2 font-semibold";
+            return;
+        }
+
+        // Đóng gói dữ liệu dạng Form Data
+        let formData = new FormData();
+            formData.append("name", userName);
+            formData.append("email", userEmail);
+            formData.append("score", `${score} / ${selectedQuestions.length}`);
+
+        // Gửi dữ liệu ngầm không làm đơ giao diện của ca viên
+        fetch(SCRIPT_URL, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => {
+            statusText.innerText = "✅ Kết quả của bạn đã được lưu tự động trên hệ thống.";
+            statusText.className = "text-xs text-green-600 mt-2 font-semibold";
+        })
+        .catch(err => {
+            console.error(err);
+            statusText.innerText = "❌ Vui lòng CHỤP MÀN HÌNH kết quả lại nha!";
+            statusText.className = "text-xs text-red-600 mt-2 font-semibold";
+        });
     }
 
     function resetQuiz() {
