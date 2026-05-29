@@ -37,28 +37,40 @@
 </head>
 <body>
 
+<div class="container" id="main-container">
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
+    <div id="login-screen">
+        <h1>LUMEN CHOIR</h1>
+        <div class="subtitle">Khảo sát kiến thức nhạc lý & phụng vụ cơ bản</div>
+        <div class="form-group">
+            <label for="username">Họ và Tên:</label>
+            <input type="text" id="username" placeholder="Nhập đầy đủ họ và tên..." required>
+        </div>
+        <div class="form-group">
+            <label for="useremail">Email:</label>
+            <input type="email" id="useremail" placeholder="Nhập địa chỉ email của bạn..." required>
+        </div>
+        <button onclick="startQuiz()">BẮT ĐẦU THỰC HIỆN</button>
+    </div>
+
+    <!-- MÀN HÌNH LÀM BÀI TRẮC NGHIỆM -->
+    <div id="quiz-screen" style="display: none;">
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+        <div id="question-container"></div>
+        <button id="next-btn" onclick="nextQuestion()" style="display: none; background-color: var(--secondary-color); margin-top: 10px;">CÂU TIẾP THEO</button>
+    </div>
+
+    <!-- MÀN HÌNH KẾT QUẢ & CHỨNG NHẬN -->
+    <div id="result-screen" class="result-screen">
+        <h2>KẾT QUẢ KHẢO SÁT</h2>
+        <div id="result-content"></div>
+    </div>
+</div>
+    
 <script>
         // Thay đường dẫn URL Google Apps Script của anh vào đây sau khi làm xong
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt_eB5BRVjWwZDCzziXwKZ5FWGF18WHcpe9BeKm-QWRMvXf_advLudjMxGaIVJgGe-/exec";
     </script>
-
-    <div id="login-screen" class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 transition-all duration-300">
-        <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-slate-800 uppercase tracking-wide">Khảo Sát Kiến Thức</h2>
-            <p class="text-sm text-slate-500 mt-1">Dành cho ca viên Dàn hợp xướng Lumen</p>
-        </div>
-        <form id="login-form" onsubmit="startQuiz(event)" class="space-y-4">
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Họ và tên <span class="text-red-500">*</span></label>
-                <input type="text" id="user-name" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" placeholder="Nhập đầy đủ họ tên">
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Email <span class="text-red-500">*</span></label>
-                <input type="email" id="user-email" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" placeholder="viethung@gmail.com">
-            </div>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 cursor-pointer">Bắt Đầu Làm Bài</button>
-        </form>
-    </div>
 
 <div class="quiz-container">
     <div id="quiz-screen">
